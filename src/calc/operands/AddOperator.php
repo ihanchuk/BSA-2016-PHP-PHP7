@@ -9,9 +9,9 @@ class AddOperator implements ActionInterface
 
     use infoTrait;
 
-    public function make(array $operands)
+    public function make(array $operands) : float
     {
-        return array_sum($operands);
+        return ($operands[0] + $operands[1]);
     }
 
 }

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace calc\app;
 
 use calc\base\ActionInterface;
@@ -7,17 +7,19 @@ use calc\base\ActionInterface;
 class Calculator {
     protected $operands;
     public  $logger;
-
-    public function __construct($log)
-    {
-        $this->logger = $log;
-    }
+    public $display;
 
     public function setOperands(array $operands) : bool
     {
 
         if(count($operands) != 2) {
             throw new \LogicException("There must be exactly 2 elements in operands array!");
+            die();
+        }
+
+        if( !is_numeric($operands[0]) || !is_numeric($operands[1]) ) {
+            throw new \LogicException("Both operands must be only numbers!!!!");
+            die();
         }
 
         $this->operands = $operands;
@@ -25,28 +27,25 @@ class Calculator {
         return true;
     }
 
-    public function getResult(ActionInterface $operator)
+    public function getResult(ActionInterface $operator) : array
     {
-        $logInfo = [];
-
+        $data =  [];
         try {
-            $result = $operator->make($this->operands);
+            $res = $operator->make($this->operands);
         } catch (\Throwable $err){
-            $errorMessage = "Failed because of: ".$err->getMessage();
-            $result = $errorMessage;
-
-            print("<div style='border:1px solid red;padding:5px;'>{$errorMessage}</div>");
-
+            $data["error"] = $err->getMessage();
+            $data["line"] = $err->getLine();
         } finally{
-            $logInfo["result"] = $result;
-            $logInfo["time"] = date("Y/m/d H:i:s");
-            $logInfo["op1"] =$this->operands[0];
-            $logInfo["op2"] =$this->operands[1];
-            $logInfo["action"] =$operator->getSign();
 
-            $this->logger->logMessage($logInfo);
+            if(!isset($data["error"])){
+                $data["result"]  = $res;
+            }
+
+            $data["operation"] = $operator->getSign();
+            $data["op1"] = $this->operands[0];
+            $data["op2"] = $this->operands[1];
         }
-        return $result;
+        return $data;
     }
 
 }

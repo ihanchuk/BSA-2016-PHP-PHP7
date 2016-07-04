@@ -3,57 +3,53 @@ declare(strict_types=1);
 
 $loader = require __DIR__ . '/vendor/autoload.php';
 
-$t = new calc\operands\AddOperator();
+use calc\app\BaseProto as App;
 
-$calc = new calc\app\Calculator(
+$calc = new calc\app\Calculator();
+$display =new \calc\app\Display();
+$loger = new \calc\app\Loger();
 
-    new class {
-        private $logs=[];
+$app = new App($calc,$display,new class{
 
-        public function logMessage(array $mes){
-            array_push($this->logs, $mes);
-        }
+    private $logs=[];
 
-        public function dumpLog(){
-            print("<pre>");
-            var_dump($this->logs);
-        }
+    public function logMessage(array $data){
+        $opTime = date("D M j G:i:s T Y");
+        $str= "Date:{$opTime} Operator: {$data["operation"]} Operands:{$data["op1"]} and {$data["op2"]} 
+        Result: {$data["result"]}";
+
+        array_push($this->logs, $str);
     }
 
-);
+    public function dumpLog(){
+        print("<pre>");
+        var_dump($this->logs);
+    }
+});
 
-try {
-    $calc->setOperands([12,10]);
-} catch (\LogicException $exc){
-    print ("<h1>{$exc->getMessage()}</h1>");
-} finally{
+/* Legal nums for testing*/
+$app->display->showInfo("Testing with some nice numbers");
+$app->testCalcWithNumbers(34,6.4);
 
-    /* Valid values for calc */
 
-    $res = $calc->getResult(new \calc\operands\AddOperator());
-    /*$res = $calc->getResult(new \calc\operands\SubtractOperator());
-    $res = $calc->getResult(new \calc\operands\MultiplyOperator());
-    $res = $calc->getResult(new \calc\operands\IntegerDivisionOperator());
-    $res = $calc->getResult(new \calc\operands\PowerOperator());
-*/
 
-    /* Setting wrong values for calc*/
+/*  Testing with some bullshit */
+try{
+    $app->display->showInfo("MakingError or testing");
+    $app->testCalcWithNumbers("===032+-+/*","234");
+}catch(Throwable $th){
+    $app->display->showError($th->getMessage());
+}
 
-    $calc->setOperands([0,0]);
-
-    /* */
-
-    /*$res = $calc->getResult(new \calc\operands\AddOperator());
-    $res = $calc->getResult(new \calc\operands\SubtractOperator());
-    $res = $calc->getResult(new \calc\operands\MultiplyOperator());
-    */
-    $res = $calc->getResult(new \calc\operands\IntegerDivisionOperator());
-    $res = $calc->getResult(new \calc\operands\PowerOperator());
-
-    /* Dumping data to check logs */
-
-    $calc->logger->dumpLog();
+/*  Testing with illegal numbers */
+try{
+    $app->display->showInfo("Testing wth som wrong numbers");
+    $app->testCalcWithNumbers(0,0);
+}catch(Throwable $th){
+    $app->display->showError($th->getMessage());
 }
 
 
-print("<h1>R - ".pow(0,0)."</h1>");
+/* Displaying  log*/
+$app->display->showInfo("Diplaying raw lo data");
+$app->showLog();
