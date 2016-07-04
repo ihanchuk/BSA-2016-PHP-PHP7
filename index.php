@@ -22,13 +22,38 @@ $calc = new calc\app\Calculator(
 
 );
 
-$calc->setOperands([12,10]);
+try {
+    $calc->setOperands([12,10]);
+} catch (\LogicException $exc){
+    print ("<h1>{$exc->getMessage()}</h1>");
+} finally{
 
-$res = $calc->getResult(new \calc\operands\AddOperator());
-$res = $calc->getResult(new \calc\operands\SubtractOperator());
-$res = $calc->getResult(new \calc\operands\MultiplyOperator());
-$res = $calc->getResult(new \calc\operands\IntegerDivisionOperator());
-$res = $calc->getResult(new \calc\operands\PowerOperator());
+    /* Valid values for calc */
 
-$calc->logger->dumpLog();
+    $res = $calc->getResult(new \calc\operands\AddOperator());
+    /*$res = $calc->getResult(new \calc\operands\SubtractOperator());
+    $res = $calc->getResult(new \calc\operands\MultiplyOperator());
+    $res = $calc->getResult(new \calc\operands\IntegerDivisionOperator());
+    $res = $calc->getResult(new \calc\operands\PowerOperator());
+*/
 
+    /* Setting wrong values for calc*/
+
+    $calc->setOperands([0,0]);
+
+    /* */
+
+    /*$res = $calc->getResult(new \calc\operands\AddOperator());
+    $res = $calc->getResult(new \calc\operands\SubtractOperator());
+    $res = $calc->getResult(new \calc\operands\MultiplyOperator());
+    */
+    $res = $calc->getResult(new \calc\operands\IntegerDivisionOperator());
+    $res = $calc->getResult(new \calc\operands\PowerOperator());
+
+    /* Dumping data to check logs */
+
+    $calc->logger->dumpLog();
+}
+
+
+print("<h1>R - ".pow(0,0)."</h1>");

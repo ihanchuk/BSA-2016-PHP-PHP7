@@ -21,22 +21,32 @@ class Calculator {
         }
 
         $this->operands = $operands;
+
         return true;
     }
 
-    public function getResult(ActionInterface $operator) : float
+    public function getResult(ActionInterface $operator)
     {
-        $operationDate = date("Y/m/d H:i:s");
-        $result =  $operator->make($this->operands);
+        $logInfo = [];
 
-        $this->logger->logMessage([
-            "time"=>$operationDate,
-            "result" =>$result,
-            "op1" =>$this->operands[0],
-            "op2" =>$this->operands[1],
-            "action"=>$operator->getSign()
-        ]);
+        try {
+            $result = $operator->make($this->operands);
+        } catch (\Throwable $err){
+            $errorMessage = "Failed because of: ".$err->getMessage();
+            $result = $errorMessage;
 
+            print("<div style='border:1px solid red;padding:5px;'>{$errorMessage}</div>");
+
+        } finally{
+            $logInfo["result"] = $result;
+            $logInfo["time"] = date("Y/m/d H:i:s");
+            $logInfo["op1"] =$this->operands[0];
+            $logInfo["op2"] =$this->operands[1];
+            $logInfo["action"] =$operator->getSign();
+
+            $this->logger->logMessage($logInfo);
+        }
         return $result;
     }
+
 }

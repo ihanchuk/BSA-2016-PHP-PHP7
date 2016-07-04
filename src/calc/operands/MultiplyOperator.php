@@ -7,7 +7,7 @@ use  calc\base\OperandInfo as infoTrait;
 
 class MultiplyOperator implements ActionInterface
 {
-    protected $operandSign = "-";
+    protected $operandSign = "*";
 
     use infoTrait;
 
