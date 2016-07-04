@@ -23,8 +23,12 @@ $calc = new calc\app\Calculator(
 );
 
 $calc->setOperands([12,10]);
+
 $res = $calc->getResult(new \calc\operands\AddOperator());
 $res = $calc->getResult(new \calc\operands\SubtractOperator());
+$res = $calc->getResult(new \calc\operands\MultiplyOperator());
+$res = $calc->getResult(new \calc\operands\IntegerDivisionOperator());
+$res = $calc->getResult(new \calc\operands\PowerOperator());
 
 $calc->logger->dumpLog();
 
