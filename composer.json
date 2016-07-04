@@ -1,0 +1,16 @@
+{
+    "name": "ihanchuk/dz1",
+    "description": "Homework #1 for BSA 2016",
+    "require": {
+        "php": "7.*"
+    },
+    "autoload": {
+        "psr-4": {"": "src/"}
+    },
+    "authors": [
+        {
+            "name": "Igor Khanchuk",
+            "email": "mfc2005@ukr.net"
+        }
+    ]
+}
